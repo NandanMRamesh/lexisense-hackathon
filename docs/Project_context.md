@@ -5,7 +5,7 @@ It is meant to serve as a reference for future developers (or an LLM) so the pro
 
 ---
 
-## 🔹 Project Overview
+## Project Overview
 - **Problem Statement ID:** 25035  
 - **Title:** Sentiment analysis of comments received through E-consultation module  
 - **Organization:** Ministry of Corporate Affairs (MoCA)  
@@ -13,7 +13,7 @@ It is meant to serve as a reference for future developers (or an LLM) so the pro
 
 ---
 
-## 🔹 Approach
+## Approach
 1. **Input**  
    - Stakeholders submit comments (text or CSV for demo).  
 
@@ -31,41 +31,42 @@ It is meant to serve as a reference for future developers (or an LLM) so the pro
 
 ---
 
-## 🔹 Tools & Libraries
-### 🧠 Machine Learning (Hugging Face Pipelines)
+## Tools & Libraries
+### Machine Learning (Hugging Face Pipelines)
 - **Transformers Library:** [https://huggingface.co/docs/transformers](https://huggingface.co/docs/transformers)  
 - **Pipelines used:**
   - `sentiment-analysis` → Sentiment classification  
   - `summarization` → Comment summarization  
 
-### 🎨 Visualization
+### Visualization
 - **Streamlit** (UI + dashboard) → [https://docs.streamlit.io](https://docs.streamlit.io)  
 - **WordCloud** (keyword visualization) → [https://amueller.github.io/word_cloud/](https://amueller.github.io/word_cloud/)  
 - **Matplotlib** (basic plots for sentiment distribution)  
 
-### 📂 Data Handling
+### Data Handling
 - **CSV files** with Pandas for reading/writing.  
 - Example: `sample_comments.csv` → analyzed → `processed.csv`  
 
 ---
 
-## 🔹 Architecture (Simplified)
-User Comment(s)↓Streamlit Frontend (UI)↓Hugging Face Pipelines├── Sentiment Analysis├── Summarization└── Word Cloud↓Dashboard Output (tables, charts, images)
+## Architecture (Simplified)
+User Comment(s)
+↓
+Streamlit Frontend (UI)↓Hugging Face Pipelines├── Sentiment Analysis├── Summarization└── Word Cloud↓Dashboard Output (tables, charts, images)
 
 
 ---
 
-## 🔹 Decisions Taken
-- ✅ Use **Streamlit** instead of React/FastAPI for simplicity and speed.  
-- ✅ Use **Hugging Face pipelines** (pretrained models) → no training required.  
-- ✅ Use **CSV files** for storage instead of a database.  
-- ✅ Run models **locally** → free, offline after first download.  
-- ❌ Dropped old laptop server idea (too complex networking).  
-- ✅ Deployment option: **Streamlit Cloud (free)** for public demo URL.  
+## Decisions Taken
+- Use **Streamlit** instead of React/FastAPI for simplicity and speed.  
+- Use **Hugging Face pipelines** (pretrained models) → no training required.  
+- Use **CSV files** for storage instead of a database.  
+- Run models **locally** → free, offline after first download.   
+- Deployment option: **Streamlit Cloud (free)** for public demo URL.  
 
 ---
 
-## 🔹 Future Improvements
+## Future Improvements
 - Use **FastAPI + database** (e.g., PostgreSQL) for production scale.  
 - Add **aspect-based sentiment** (per clause/section of legislation).  
 - Deploy on **cloud VM** for reliability (AWS/GCP).  
@@ -74,7 +75,7 @@ User Comment(s)↓Streamlit Frontend (UI)↓Hugging Face Pipelines├── Sent
 
 ---
 
-## 🔹 Team Distribution (6 Members)
+## Team Distribution (6 Members)
 - Person 1 → Team Lead / Integrator  
 - Person 2 → Streamlit UI  
 - Person 3 → Sentiment Analysis  
@@ -84,15 +85,10 @@ User Comment(s)↓Streamlit Frontend (UI)↓Hugging Face Pipelines├── Sent
 
 ---
 
-## 🔹 Hackathon Timeline
+## Hackathon Timeline
 - **Day 1:** Setup, test Hugging Face pipelines, prepare sample CSVs.  
 - **Day 2:** Build Streamlit dashboard, integrate ML functions, add visualizations.  
 - **Day 3:** Testing, UI polish, final demo prep.  
 
 ---
 
-## 🔹 Key Takeaways
-- Hugging Face pipelines are **ideal for hackathons** → plug-and-play AI.  
-- Streamlit makes **professional dashboards fast**.  
-- Focus on **polish + working demo** over complex backend.  
-- Keep everything **offline-capable** to avoid internet issues in demo.  
