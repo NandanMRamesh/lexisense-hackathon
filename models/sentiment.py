@@ -1,8 +1,10 @@
 # sentiment_utils.py
 from transformers import pipeline
 
-# Load the model once (saves time)
-sentiment_pipeline = pipeline("sentiment-analysis") #type: ignore
+sentiment_pipeline = pipeline(
+    task="sentiment-analysis",
+    model="cardiffnlp/twitter-roberta-base-sentiment-latest"
+)#type: ignore
 
 def analyze_sentiment(texts):
     """
