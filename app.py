@@ -21,7 +21,7 @@ if uploaded_file:
     else:
         comments = df["Comment"].dropna().astype(str).tolist()
 elif user_input.strip():
-    comments = [c.strip() for c in user_input.strip().split("\n") if c.strip()]
+    comments = [user_input.strip()]
 
 if st.button("Analyze & Summarize"):
     if not comments:
