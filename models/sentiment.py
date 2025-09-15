@@ -1,17 +1,15 @@
-# sentiment_utils.py
 from transformers import pipeline
+import streamlit as st
 
-sentiment_pipeline = pipeline(
-    task="sentiment-analysis",
-    model="cardiffnlp/twitter-roberta-base-sentiment-latest"
-)#type: ignore
+@st.cache_resource
+def load_sentiment():
+    return pipeline("sentiment-analysis", model="cardiffnlp/twitter-roberta-base-sentiment-latest")
 
-def analyze_sentiment(texts):
-    """
-    Run sentiment analysis on a single string or a list of strings.
-    Returns a list of dicts with 'label' and 'score'.
-    """
-    if isinstance(texts, str):
-        texts = [texts]
+sentiment_analyzer = load_sentiment()
 
-    return sentiment_pipeline(texts)
+def analyze_sentiment(text):
+    result = sentiment_analyzer(text)[0]
+    return {
+        "Sentiment": result['label'],
+        "Score": round(result['score'], 2)
+    }
