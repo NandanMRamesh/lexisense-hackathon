@@ -6,6 +6,7 @@ def load_summarizer():
     # You can swap this with another summarization model if needed
     return pipeline("summarization", model="facebook/bart-large-cnn")
 
+
 summarizer = load_summarizer()
 
 # ---- Helper: break text into chunks ----
