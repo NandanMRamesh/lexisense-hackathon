@@ -1,70 +1,58 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
-from wordcloud import WordCloud, STOPWORDS
-from models.sentiment import analyze_sentiment   # your custom model
-from nltk.sentiment import SentimentIntensityAnalyzer
+from models.summarise import summarize_text
+from models.sentiment import analyze_sentiment
+from models.wordcloud import generate_wordcloud
 
-st.title("Sentiment Analysis Demo")
+st.title("📝 E-Consultation Comments Dashboard")
+st.write("Paste comments or upload a CSV file to get summaries and sentiment analysis:")
 
-# Text input + File upload
-user_text = st.text_area("Enter a comment:")
-uploaded_file = st.file_uploader("Upload CSV with a 'comment' column", type="csv")
+# Option 1: Text input
+user_input = st.text_area("Paste comments here (one per line)", height=200)
+st.write("Large comments might be chunked for processing.")
+# Option 2: CSV file upload
+uploaded_file = st.file_uploader("Upload a CSV file with a 'Comment' column", type=["csv"])
 
-if st.button("Analyze"):
-    # --- Analyze user text ---
-    if user_text.strip():
-        result = analyze_sentiment(user_text)[0]   # your model output
-        st.write(f"*Sentiment:* {result['label']}")
-        st.write(f"*Confidence:* {result['score']:.2f}")
+comments = []
 
-    # --- Analyze CSV and Generate WordCloud ---
-    if uploaded_file:
-        try:
-            df = pd.read_csv(uploaded_file)
+if uploaded_file:
+    df = pd.read_csv(uploaded_file)
+    if "Comment" not in df.columns:
+        st.error("CSV must have a 'Comment' column.")
+    else:
+        comments = df["Comment"].dropna().astype(str).tolist()
+elif user_input.strip():
+    comments = [user_input.strip()]
 
-            if "comment" not in df.columns:
-                st.error("CSV must contain a 'comment' column.")
-            else:
-                # Analyze all comments
-                results = analyze_sentiment(df["comment"].tolist())
-                df["Sentiment"] = [r["label"] for r in results]
-                df["Confidence"] = [r["score"] for r in results]
+if st.button("Analyze & Summarize"):
+    if not comments:
+        st.warning("Please enter or upload some comments to analyze.")
+    else:
+        with st.spinner("Processing comments..."):
+            results = []
+            all_text = " ".join(comments)
 
-                st.subheader("Uploaded Data with Sentiment")
-                st.dataframe(df)
+            # Summarize all comments together
+            overall_summary = summarize_text(all_text)
 
-                # WordCloud only from CSV comments with chosen sentiment
-           
-            sia = SentimentIntensityAnalyzer()
+            for comment in comments:
+                if len(comment.split()) > 15:
+                    summary = summarize_text(comment, max_length=60, min_length=15)
+                else:
+                    summary = comment  # Too short to summarize
 
-            def classify_comment_vader(comment):
-             score = sia.polarity_scores(comment)['compound']
-             if score >= 0.05:
-               return "Positive"
-             elif score <= -0.05:
-                 return "Negative"
-             else:
-                return None
-            all_comments = df["comment"].tolist()
-            filtered_comments = [c for c in all_comments if classify_comment_vader(c) ]
-            if filtered_comments:
-                    text = " ".join(filtered_comments)
-                    wordcloud = WordCloud(
-                        width=800,
-                        height=400,
-                        background_color="white",
-                        stopwords=STOPWORDS
-                    ).generate(text)
+                sentiment = analyze_sentiment(comment)
+                results.append({
+                    "Comment": comment,
+                    "Summary": summary,
+                    **sentiment
+                })
 
-                    plt.figure(figsize=(10, 5))
-                    plt.imshow(wordcloud, interpolation="bilinear")
-                    plt.axis("off")
-                    st.pyplot(plt)
+            st.subheader("Overall Summary of All Comments:")
+            st.info(overall_summary)
 
-        except Exception as e:
-            st.error(f"Error reading file: {e}")
+            st.subheader("Word Cloud of Comments:")
+            generate_wordcloud(comments)
 
-    # --- If neither ---
-    if not user_text.strip() and not uploaded_file:
-        st.warning("Please enter some text or upload a CSV file.")
+            st.subheader("Detailed Comment Analysis:")
+            st.dataframe(results)
