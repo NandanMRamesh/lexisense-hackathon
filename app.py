@@ -4,60 +4,79 @@ import matplotlib.pyplot as plt
 from models.summarise import summarize_text
 from models.sentiment import analyze_sentiment
 from models.wordcloud import generate_wordcloud
+from visuals.speedometer import show_speedometer
 
 st.set_page_config(page_title="LexiSense Dashboard", layout="wide")
 
 st.title("📊 LexiSense – E-Consultation Comments Dashboard")
-st.write("Upload comments CSV to get **summaries, sentiment insights, and visualizations**.")
 
-# Initialize df
-df = None
-comments = []
+# Initialize session state
+if "analysis_done" not in st.session_state:
+    st.session_state.analysis_done = False
+if "results_df" not in st.session_state:
+    st.session_state.results_df = None
+if "overall_summary" not in st.session_state:
+    st.session_state.overall_summary = None
+if "comments" not in st.session_state:
+    st.session_state.comments = []
 
-# File upload only
-uploaded_file = st.file_uploader("📂 Upload a CSV file with a 'Comment' column", type=["csv"])
+# ------------------------
+# BEFORE ANALYSIS → Show uploader
+# ------------------------
+if not st.session_state.analysis_done:
+    st.write("Upload comments CSV to get **summaries, sentiment insights, and visualizations**.")
+    uploaded_file = st.file_uploader("📂 Upload a CSV file with a 'Comment' column", type=["csv"])
 
-if uploaded_file:
-    tmp_df = pd.read_csv(uploaded_file)
-    if "Comment" not in tmp_df.columns:
-        st.error("CSV must have a 'Comment' column.")
+    if st.button("🚀 Analyze Comments") and uploaded_file:
+        df = pd.read_csv(uploaded_file)
+
+        if "Comment" not in df.columns:
+            st.error("CSV must have a 'Comment' column.")
+        else:
+            comments = df["Comment"].dropna().astype(str).tolist()
+
+            if len(comments) == 0:
+                st.error("No valid comments found in the CSV.")
+            else:
+                with st.spinner("Processing comments..."):
+                    results = []
+                    all_text = " ".join(comments)
+
+                    overall_summary = summarize_text(all_text)
+
+                    for comment in comments:
+                        if len(comment.split()) > 15:
+                            summary = summarize_text(comment, max_length=60, min_length=15)
+                        else:
+                            summary = comment
+                        sentiment = analyze_sentiment(comment)
+                        results.append({
+                            "Comment": comment,
+                            "Summary": summary,
+                            **sentiment
+                        })
+
+                    results_df = pd.DataFrame(results)
+
+                # Save results in session_state
+                st.session_state.analysis_done = True
+                st.session_state.results_df = results_df
+                st.session_state.overall_summary = overall_summary
+                st.session_state.comments = comments
+                st.rerun()
+
+# ------------------------
+# AFTER ANALYSIS → Show dashboard
+# ------------------------
+else:
+    results_df = st.session_state.results_df
+    overall_summary = st.session_state.overall_summary
+    comments = st.session_state.comments
+
+    if results_df is None or results_df.empty:
+        st.warning("⚠️ No analysis results available.")
     else:
-        df = tmp_df
-        comments = df["Comment"].dropna().astype(str).tolist()
-
-if st.button("🚀 Analyze Comments"):
-    if not comments:
-        st.warning("Please upload a valid CSV with comments.")
-    else:
-        with st.spinner("Processing comments..."):
-            results = []
-            all_text = " ".join(comments)
-
-            # Summarize all comments together
-            overall_summary = summarize_text(all_text)
-
-            for comment in comments:
-                if len(comment.split()) > 15:
-                    summary = summarize_text(comment, max_length=60, min_length=15)
-                else:
-                    summary = comment  # Too short to summarize
-
-                sentiment = analyze_sentiment(comment)
-                results.append({
-                    "Comment": comment,
-                    "Summary": summary,
-                    **sentiment
-                })
-
-            results_df = pd.DataFrame(results)
-
-        # ---- Dashboard Layout ----
         st.success("✅ Analysis Completed!")
-
-        # Collapsible raw comments (only if df exists)
-        if df is not None:
-            with st.expander("📑 View Uploaded Comments"):
-                st.dataframe(df, use_container_width=True)
 
         # Overall Summary
         st.subheader("📝 Overall Summary")
@@ -73,30 +92,33 @@ if st.button("🚀 Analyze Comments"):
             st.bar_chart(sentiment_counts)
 
         with col2:
-            fig, ax = plt.subplots()
-            ax.pie(
-                sentiment_counts.to_numpy(),
-                labels=sentiment_counts.index.tolist(),
-                autopct="%1.1f%%",
-                startangle=90
-            )
-            ax.axis("equal")
-            st.pyplot(fig)
+            st.subheader("🚦 Average Sentiment Score")
+            sentiment_map = {"positive": 100, "neutral": 50, "negative": 0}
+            numeric_scores = results_df["Sentiment"].map(sentiment_map)
+            numeric_scores = numeric_scores.dropna()
+            if not numeric_scores.empty:
+                 avg_sentiment_score = int(numeric_scores.mean())
+                 show_speedometer(avg_sentiment_score)
+            else: 
+                 st.write("No sentiment scores available to display.")
 
-        # Word Cloud
+
+             # Word Cloud
         st.subheader("☁️ Word Cloud of Comments")
         generate_wordcloud(comments)
+
 
         # Detailed Table (with color-coded sentiment)
         st.subheader("🔍 Detailed Comment Analysis")
 
         def highlight_sentiment(val):
-            if val.lower() == "positive":
-                return "color: green; font-weight: bold;"
-            elif val.lower() == "negative":
-                return "color: red; font-weight: bold;"
-            elif val.lower() == "neutral":
-                return "color: gray; font-weight: bold;"
+            if isinstance(val, str):
+                if val.lower() == "positive":
+                    return "color: green; font-weight: bold;"
+                elif val.lower() == "negative":
+                    return "color: red; font-weight: bold;"
+                elif val.lower() == "neutral":
+                    return "color: gray; font-weight: bold;"
             return ""
 
         styled_df = results_df.style.apply(
@@ -112,3 +134,11 @@ if st.button("🚀 Analyze Comments"):
             file_name="analyzed_comments.csv",
             mime="text/csv",
         )
+
+    # Restart button
+    if st.button("🔄 New Analysis"):
+        st.session_state.analysis_done = False
+        st.session_state.results_df = None
+        st.session_state.overall_summary = None
+        st.session_state.comments = []
+        st.rerun()
