@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from models.summarise import summarize_text
 from models.sentiment import analyze_sentiment
+from models.wordcloud import generate_wordcloud
 
 st.title("📝 E-Consultation Comments Dashboard")
 st.write("Paste comments or upload a CSV file to get summaries and sentiment analysis:")
@@ -49,6 +50,9 @@ if st.button("Analyze & Summarize"):
 
             st.subheader("Overall Summary of All Comments:")
             st.info(overall_summary)
+
+            st.subheader("Word Cloud of Comments:")
+            generate_wordcloud(comments)
 
             st.subheader("Detailed Comment Analysis:")
             st.dataframe(results)
