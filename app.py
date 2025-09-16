@@ -15,8 +15,8 @@ if st.button("Analyze"):
     # --- Analyze user text ---
     if user_text.strip():
         result = analyze_sentiment(user_text)[0]   # your model output
-        st.write(f"**Sentiment:** {result['label']}")
-        st.write(f"**Confidence:** {result['score']:.2f}")
+        st.write(f"*Sentiment:* {result['label']}")
+        st.write(f"*Confidence:* {result['score']:.2f}")
 
     # --- Analyze CSV and Generate WordCloud ---
     if uploaded_file:
@@ -47,7 +47,7 @@ if st.button("Analyze"):
              else:
                 return None
             all_comments = df["comment"].tolist()
-            filtered_comments = [c for c in all_comments if classify_comment_vader(c)]
+            filtered_comments = [c for c in all_comments if classify_comment_vader(c) ]
             if filtered_comments:
                     text = " ".join(filtered_comments)
                     wordcloud = WordCloud(
