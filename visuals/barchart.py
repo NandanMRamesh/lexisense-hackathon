@@ -4,21 +4,24 @@ import pandas as pd
 
 def show_sentiment_bar_chart(results_df: pd.DataFrame):
     """
-    Display a visually appealing sentiment bar chart with counts and percentages.
+    Display a sentiment bar chart with counts, percentages, and avg scores.
     
     Args:
-        results_df (pd.DataFrame): DataFrame containing a 'Sentiment' column
+        results_df (pd.DataFrame): DataFrame with 'Sentiment' and 'Score' columns
     """
     if "Sentiment" not in results_df.columns or results_df.empty:
         st.warning("No sentiment data available to display bar chart.")
         return
 
-    # Prepare data
+    # Count per sentiment
     sentiment_counts = results_df["Sentiment"].value_counts()
     total = sentiment_counts.sum()
     percentages = (sentiment_counts / total * 100).round(1)
 
-    # Custom colors for sentiments
+    # Average score per sentiment
+    avg_scores = results_df.groupby("Sentiment")["Score"].mean().round(2)
+
+    # Custom colors
     colors = {
         "positive": "#00cc96",
         "neutral": "#ffcc00",
@@ -31,17 +34,17 @@ def show_sentiment_bar_chart(results_df: pd.DataFrame):
         fig.add_trace(go.Bar(
             x=[sentiment],
             y=[sentiment_counts[sentiment]],
-            text=f"{sentiment_counts[sentiment]} ({percentages[sentiment]}%)",
+            text=f"{sentiment_counts[sentiment]} ({percentages[sentiment]}%)\nAvg: {avg_scores[sentiment]:.2f}",
             textposition="auto",
             marker_color=colors.get(sentiment, "#636EFA")
         ))
 
     fig.update_layout(
-        title="Sentiment Counts",
+        title="Sentiment Counts + Avg Scores",
         yaxis_title="Number of Comments",
         xaxis_title="Sentiment",
         template="simple_white",
-        height=400,
+        height=450,
         margin=dict(l=40, r=40, t=50, b=40)
     )
 
