@@ -3,21 +3,34 @@ import streamlit as st
 import time
 
 def show_speedometer(sentiment_score: int):
+    """
+    Display a smooth animated gauge showing overall sentiment score.
+    Needle color changes based on sentiment zone.
+    Also shows a textual label: Mostly Negative, Neutral, Mostly Positive.
+    """
     placeholder = st.empty()
+
+    # Determine needle color and label
+    if sentiment_score <= 33:
+        needle_color = "#ff4c4c"  # Red
+        sentiment_label = "Mostly Negative"
+    elif sentiment_score <= 66:
+        needle_color = "#ffcc00"  # Yellow
+        sentiment_label = "Neutral"
+    else:
+        needle_color = "#00cc96"  # Green
+        sentiment_label = "Mostly Positive"
+
+    # Show textual label above gauge
+    st.markdown(f"### Overall Sentiment: **{sentiment_label}**")
 
     for score in range(0, sentiment_score + 1, 2):  # Smooth animation
         fig = go.Figure(go.Indicator(
-            mode="gauge+number+delta",
+            mode="gauge+number",
             value=score,
             number={
                 'suffix': "%",
-                'font': {'size': 48, 'color': '#1f77b4'}
-            },
-            delta={
-                'reference': 50,
-                'increasing': {'color': "#00cc96"},
-                'decreasing': {'color': "#ff4c4c"},
-                'font': {'size': 24}
+                'font': {'size': 48, 'color': needle_color}
             },
             domain={'x': [0, 1], 'y': [0, 1]},
             title={
@@ -26,7 +39,7 @@ def show_speedometer(sentiment_score: int):
             },
             gauge={
                 'axis': {'range': [0, 100], 'tickwidth': 2, 'tickcolor': "#333333"},
-                'bar': {'color': '#1f77b4', 'thickness': 0.3},
+                'bar': {'color': "#1f77b4", 'thickness': 0.3},
                 'bgcolor': "#f5f5f5",
                 'borderwidth': 2,
                 'bordercolor': "#dddddd",
