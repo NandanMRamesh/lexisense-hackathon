@@ -34,13 +34,13 @@ def show_sentiment_bar_chart(results_df: pd.DataFrame):
         fig.add_trace(go.Bar(
             x=[sentiment],
             y=[sentiment_counts[sentiment]],
-            text=f"{sentiment_counts[sentiment]} ({percentages[sentiment]}%)\nAvg: {avg_scores[sentiment]:.2f}",
+            text=f"{sentiment_counts[sentiment]} ({percentages[sentiment]}%)",
             textposition="auto",
             marker_color=colors.get(sentiment, "#636EFA")
         ))
 
     fig.update_layout(
-        title="Sentiment Counts + Avg Scores",
+        title="Sentiment Counts",
         yaxis_title="Number of Comments",
         xaxis_title="Sentiment",
         template="simple_white",

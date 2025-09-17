@@ -20,7 +20,7 @@ def compute_overall_sentiment(results_df: pd.DataFrame) -> int:
     if scores.empty:
         return 50  # Neutral fallback
 
-    return int(scores.mean().round())
+    return int(scores.mean())
 
 
 def show_speedometer(sentiment_score: int):

@@ -1,11 +1,13 @@
 import streamlit as st
 import pandas as pd
+import nltk
 from io import BytesIO
 from models.summarise import summarize_text
 from models.sentiment import analyze_sentiment
 from models.wordcloud import generate_wordcloud
 from visuals.speedometer import show_speedometer
 from visuals.barchart import show_sentiment_bar_chart
+from typing import Dict, Any, cast
 
 st.set_page_config(page_title="LexiSense Dashboard", layout="wide")
 
@@ -78,6 +80,7 @@ if not st.session_state.analysis_done:
                                     summary = comment
 
                                 sentiment = analyze_sentiment(comment)
+                                sentiment = cast(Dict[str, Any], sentiment)
                                 sentiment_label = sentiment.get("Sentiment", "neutral")
                                 sentiment_score = sentiment.get("Score", 0.0)
 
