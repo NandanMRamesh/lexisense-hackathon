@@ -1,27 +1,6 @@
-# speedometer.py
 import plotly.graph_objects as go
 import streamlit as st
-import pandas as pd
 import time
-
-
-def compute_overall_sentiment(results_df: pd.DataFrame) -> int:
-    """
-    Compute overall sentiment score (0–100) from a results dataframe.
-    Maps sentiments into numeric values:
-        negative = 0, neutral = 50, positive = 100
-    """
-    if results_df.empty or "Sentiment" not in results_df.columns:
-        return 50  # Neutral fallback
-
-    mapping = {"negative": 0, "neutral": 50, "positive": 100}
-    scores = results_df["Sentiment"].map(mapping).dropna()
-
-    if scores.empty:
-        return 50  # Neutral fallback
-
-    return int(scores.mean().round())
-
 
 def show_speedometer(sentiment_score: int):
     """
