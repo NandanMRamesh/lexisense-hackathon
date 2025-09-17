@@ -1,10 +1,11 @@
 from wordcloud import WordCloud
-import matplotlib.pyplot as plt
 import streamlit as st
+import tempfile
 
 def generate_wordcloud(comments, max_words=100):
     """
     Generate and display a word cloud from a list of comments.
+    Uses tempfile + st.image to avoid Streamlit MediaFileStorage errors.
     """
     if isinstance(comments, str):
         text = comments
@@ -20,8 +21,7 @@ def generate_wordcloud(comments, max_words=100):
         collocations=False  # prevents joining of common word pairs
     ).generate(text)
 
-    # Plot with matplotlib
-    fig, ax = plt.subplots(figsize=(10, 5))
-    ax.imshow(wc, interpolation="bilinear")
-    ax.axis("off")
-    st.pyplot(fig)
+    # Save to a temporary file
+    with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmpfile:
+        wc.to_file(tmpfile.name)
+        st.image(tmpfile.name, use_container_width=True)

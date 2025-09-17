@@ -8,13 +8,12 @@ app = FastAPI(title="Sentiment Analysis API")
 # Request model for single text
 class TextRequest(BaseModel):
     text: str
-
 @app.post("/analyze-text")
 def analyze_text(req: TextRequest):
-    result = analyze_sentiment(req.text)[0]
+    result = analyze_sentiment(req.text)
     return {
-        "sentiment": result["label"],
-        "confidence": round(result["score"], 4)
+        "sentiment": result["Sentiment"],
+        "confidence": result["Score"]
     }
 
 @app.post("/analyze-csv")
@@ -25,11 +24,11 @@ async def analyze_csv(file: UploadFile = File(...)):
         return {"error": "CSV must have a 'comment' column"}
 
     sentiments = analyze_sentiment(df["comment"].tolist())
-    df["Sentiment"] = [s["label"] for s in sentiments]
-    df["Confidence"] = [round(s["score"], 4) for s in sentiments]
+    df["Sentiment"] = [s["Sentiment"] for s in sentiments]
+    df["Confidence"] = [s["Score"] for s in sentiments]
 
-    # Return preview + counts
     return {
         "preview": df.head(10).to_dict(orient="records"),
         "distribution": df["Sentiment"].value_counts().to_dict()
     }
+
