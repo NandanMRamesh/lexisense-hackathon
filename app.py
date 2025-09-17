@@ -5,8 +5,6 @@ from models.summarise import summarize_text
 from models.sentiment import analyze_sentiment
 from models.wordcloud import generate_wordcloud
 from visuals.speedometer import show_speedometer
-from visuals.barchart import show_sentiment_bar_chart
-from typing import Dict, Any, cast
 
 st.set_page_config(page_title="LexiSense Dashboard", layout="wide")
 
@@ -91,10 +89,10 @@ else:
         col1, col2 = st.columns(2)
 
         with col1:
-            show_sentiment_bar_chart(results_df)
+            st.bar_chart(sentiment_counts)
 
         with col2:
-            st.subheader("Average Sentiment Score")
+            st.subheader("🚦 Average Sentiment Score")
             sentiment_map = {"positive": 100, "neutral": 50, "negative": 0}
             numeric_scores = results_df["Sentiment"].map(sentiment_map)
             numeric_scores = numeric_scores.dropna()
