@@ -14,7 +14,7 @@ The goal is to assist the **Ministry of Corporate Affairs (MoCA)** in analyzing 
 ## Current Status
 - Project setup initialized ✅  
 - Folder structure created ✅  
-- Core features (sentiment analysis, summarization, word cloud) **under development** ⚒️  
+- Core features (sentiment analysis, summarization, word cloud) ✅  
 
 ---
 
@@ -47,6 +47,16 @@ cd LexiSense
 ```bash
 python -m venv .venv
 venv\Scripts\activate
+```
+
+## Install requirments.txt
+```bash
+pip install -r requirements.txt
+```
+
+## Run the Dashboard
+```bash
+streamlit run app.py
 ```
 
 # Team
