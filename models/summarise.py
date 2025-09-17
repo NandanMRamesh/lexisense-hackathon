@@ -2,10 +2,12 @@ from transformers import pipeline
 import streamlit as st
 
 @st.cache_resource
-def load_summarizer():
-    return pipeline("summarization")
+def load_sentiment():
+    return pipeline("sentiment-analysis", model="cardiffnlp/twitter-roberta-base-sentiment-latest")
 
-summarizer = load_summarizer()
-
-def summarize_text(text, max_length=130, min_length=30):
-    return summarizer(text, max_length=max_length, min_length=min_length, do_sample=False)[0]['summary_text']
+def analyze_sentiment(text):
+    sentiment_analyzer = load_sentiment()
+    result = sentiment_analyzer(text)[0]
+    label = result["label"].lower()
+    score = result["score"]
+    return {"Sentiment": label, "Confidence": round(score, 2)}
