@@ -7,17 +7,11 @@ def show_speedometer(sentiment_score: int):
 
     for score in range(0, sentiment_score + 1, 2):  # Smooth animation
         fig = go.Figure(go.Indicator(
-            mode="gauge+number+delta",
+            mode="gauge+number",  # Removed delta
             value=score,
             number={
                 'suffix': "%",
                 'font': {'size': 48, 'color': '#1f77b4'}
-            },
-            delta={
-                'reference': 50,
-                'increasing': {'color': "#00cc96"},
-                'decreasing': {'color': "#ff4c4c"},
-                'font': {'size': 24}
             },
             domain={'x': [0, 1], 'y': [0, 1]},
             title={
