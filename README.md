@@ -1,36 +1,77 @@
-# lexisense-hackathon
-LexiSense is an AI-powered tool for analyzing stakeholder feedback on draft legislations. Using AI, it performs sentiment analysis, generates concise summaries, and creates word clouds to help policymakers quickly understand public opinion.
+# LexiSense – AI-powered Consultation Analysis System
 
-#  LexiSense
+LexiSense is an AI-powered system that analyzes large volumes of stakeholder feedback submitted during public consultations.  
+It helps policymakers quickly understand **public sentiment, recurring concerns, and key themes** in draft legislations.
 
-## Overview
-LexiSense is a prototype being developed for **Smart India Hackathon 2025** under  
-**Problem Statement ID: 25035 — Sentiment analysis of comments received through E-consultation module**.
-
-The goal is to assist the **Ministry of Corporate Affairs (MoCA)** in analyzing stakeholder comments on draft legislations.  
+Built as part of **Smart India Hackathon 2025** (Problem Statement ID: 25035).
 
 ---
 
-## Current Status
-- Project setup initialized ✅  
-- Folder structure created ✅  
-- Core features (sentiment analysis, summarization, word cloud) ✅  
+## Problem Context
+
+During public consultations on draft legislations, thousands of comments may be received through the e-Consultation module.  
+Manual analysis is time-consuming and risks overlooking critical feedback.
+
+**LexiSense automates this process using NLP**, ensuring every comment is systematically analyzed and summarized.
 
 ---
 
-## Planned Features
-- Sentiment classification of comments (Positive / Negative / Neutral)  
-- Summarization of long comments into concise insights  
-- Word cloud visualization of frequently used terms  
-- Interactive dashboard for analysis  
+## What LexiSense Does
+
+- **Sentiment Analysis**  
+  Classifies each comment as *Positive, Neutral, or Negative* using pretrained NLP models.
+
+- **Automatic Summarization**  
+  Converts long stakeholder comments into concise, meaningful summaries.
+
+- **Word Cloud Visualization**  
+  Highlights frequently used terms to surface dominant themes and concerns.
+
+- **Interactive Dashboard**  
+  Enables analysts to explore insights visually through charts and summaries.
 
 ---
 
-## Tech Stack (Planned)
-- **Python**  
-- **Streamlit** (dashboard)  
-- **Hugging Face Transformers** (ML models)  
-- **Pandas / Matplotlib / WordCloud** (data handling & visualization)  
+## System Architecture (High-level)
+
+Input Comments (Text / CSV)  
+→ NLP Pipelines (Sentiment + Summarization)  
+→ Visualization & Insights  
+→ Streamlit Dashboard / API Output  
+
+The system is designed to be **modular, offline-capable, and scalable**.
+
+---
+
+## Tech Stack
+
+- **Language:** Python  
+- **Machine Learning:** Hugging Face Transformers  
+- **Frontend / Dashboard:** Streamlit  
+- **Backend (future-ready):** FastAPI  
+- **Visualization:** Matplotlib, WordCloud  
+- **Data Handling:** Pandas  
+- **Deployment:** Docker (containerized)
+
+---
+
+## Current Features
+
+- Single & bulk comment analysis  
+- Sentiment distribution charts  
+- Automatic summaries of feedback  
+- Word cloud generation  
+- Prototype dashboard for demo & analysis  
+
+---
+
+## Planned Enhancements
+
+- PostgreSQL integration for large-scale data storage  
+- Aspect-based sentiment analysis (per clause / provision)  
+- Multilingual support (Hindi & regional languages)  
+- Conversational chatbot using RAG (Retrieval-Augmented Generation)  
+- Cloud deployment (AWS / GCP / On-prem)
 
 ---
 
